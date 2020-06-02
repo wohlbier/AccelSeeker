@@ -7,22 +7,33 @@
 ############################################################################################### 
 
 #!/bin/bash
+set -e
 
-# LLVM build directory - Edit this line.
-# LLVM_BUILD=path/to/llvm/build
-LLVM_BUILD=../llvm-8.0.0//build
+# Start Editing.
+# LLVM build directory - Edit this line. LLVM_BUILD=path/to/llvm/build
+LLVM_BUILD=~georgios/llvm-8.0.0/build
 
+# BENCH NAME - Edit this line to use it to another benchmark/application.
+BENCH=h264
+
+# Maximum Level of Bottom-Up Analysis.
 TOP_LEVEL=6
-IRDIR=IR
+# Directory that contains the .ir files.
+IRDIR=src
 
-#cd $IRDIR
-#$LLVM_BUILD/bin/llvm-link -S  *.ir -o ../h264.ir
-#cd ..
+# Stop Editing.
 
-
+if [ ! -f "$BENCH.ir" ]; then
+        echo "$BENCH.ir  needs to be generated."
+	cd $IRDIR
+	$LLVM_BUILD/bin/llvm-link -S  *.ir -o ../$BENCH.ir
+	cd ..
+else
+	echo "$BENCH.ir exists - no need to generate it again."
+fi
 
 # Collects IO informarmation, Indexes info and generates .gv call graph files for every function.
-$LLVM_BUILD/bin/opt -load $LLVM_BUILD/lib/AccelSeekerIO.so -AccelSeekerIO -stats    > /dev/null  h264.ir
+$LLVM_BUILD/bin/opt -load $LLVM_BUILD/lib/AccelSeekerIO.so -AccelSeekerIO -stats    > /dev/null  $BENCH.ir
 mkdir gvFiles; mv *.gv gvFiles/.
 
 
@@ -31,7 +42,7 @@ for ((i=0; i <= $TOP_LEVEL ; i++)) ; do
 	echo "$i"
  printf "$i" > level.txt
 
-$LLVM_BUILD/bin/opt -load $LLVM_BUILD/lib/AccelSeeker.so -AccelSeeker -stats    > /dev/null  h264.ir
+$LLVM_BUILD/bin/opt -load $LLVM_BUILD/lib/AccelSeeker.so -AccelSeeker -stats    > /dev/null  $BENCH.ir
 done
 
 cp LA_$TOP_LEVEL.txt LA.txt; mkdir analysis_data; mv SW_*.txt HW_*.txt AREA_*.txt LA_*.txt analysis_data/.  
