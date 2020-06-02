@@ -1,17 +1,22 @@
+# jgw
+```
+docker build --rm -t accelseeker .
+```
+
 # AccelSeeker
 
 # Overview
 
-The AccelSeeker© framework is a tool for automatically identifying and selecting HW accelerators directly from 
+The AccelSeeker© framework is a tool for automatically identifying and selecting HW accelerators directly from
 the application source files. It is built within LLVM8 compiler infrastructure and consists of Analysis Passes
-that estimate Software (SW) latency, Hardware (HW) latency, Area and I/O requirements. Subsequently, an exact 
+that estimate Software (SW) latency, Hardware (HW) latency, Area and I/O requirements. Subsequently, an exact
 selection algorithm selects the subset of HW accelerators that maximizes performance (speedup) under a user
 defined area (HW resources) budget.
 
 If you use AccelSeeker in your research, we would appreciate a citation to:
 
-**Compiler-Assisted Selection of Hardware Acceleration Candidates from Application Source Code.**           
-Georgios Zacharopoulos, Lorenzo Ferretti, Giovanni Ansaloni, Giuseppe Di Guglielmo, Luca Carloni, Laura Pozzi.      
+**Compiler-Assisted Selection of Hardware Acceleration Candidates from Application Source Code.**
+Georgios Zacharopoulos, Lorenzo Ferretti, Giovanni Ansaloni, Giuseppe Di Guglielmo, Luca Carloni, Laura Pozzi.
 https://ieeexplore.ieee.org/abstract/document/8988767
 
 # Installation
@@ -25,11 +30,11 @@ A.
     ./bootstrap.8.0.sh
 
 
-The bootstrap.8.0.sh script downloads and builds LLVM8, which is needed to compile and load the AccelSeeker passes. 
+The bootstrap.8.0.sh script downloads and builds LLVM8, which is needed to compile and load the AccelSeeker passes.
 
 If, for any reason, you move/rename LLVM8 source tree, then you have to modify the
-"LLVM_BUILD" Paths in the Makefile and the run_sys_aw.sh script, that invokes the AccelSeeker passes, inside the 
-directory for each benchmark accordingly. 
+"LLVM_BUILD" Paths in the Makefile and the run_sys_aw.sh script, that invokes the AccelSeeker passes, inside the
+directory for each benchmark accordingly.
 
 
 -- If LLVM8 is already installed: --
@@ -40,8 +45,8 @@ All necessary files containing the analysis passes need to be copied to the LLVM
 
     export LLVM_SRC_TREE="path/to/llvm/source/root"
 
-In order to provide the correct path to your LLVM source tree. 
- 
+In order to provide the correct path to your LLVM source tree.
+
     ./bootstrap_AS_passes.sh
 
 LLVM8 can then be recompiled using make and a new Shared Object (SO) should be created in order to load the AccelSeeker passes.
@@ -59,25 +64,25 @@ For testing the H.264 decoder https://github.com/adsc-hls/synthesizable_h264 syn
 
     cd sim
 
-We make sure that the LLVM lines in "Makefile_AccelSeeker" point to the path of the LLVM8 build and lib directory:    
+We make sure that the LLVM lines in "Makefile_AccelSeeker" point to the path of the LLVM8 build and lib directory:
 
     BIN_DIR_LLVM=path/to/llvm/build/bin
     LIB_DIR_LLVM=path/to/llvm/build/lib
 
 Then we run the instrumented binary with the appropriate input parameters and generate the annotated IR files using
-the profiling information.    
+the profiling information.
 
     make profile
 
-### 2) Identification of candidates for acceleration and estimation of Latency, Area and I/O requirements.   
+### 2) Identification of candidates for acceleration and estimation of Latency, Area and I/O requirements.
 
 We make sure that the LLVM_BUILD line in "run_sys_aw.sh" points to the path of the LLVM8 build directory:
 
     LLVM_BUILD=path/to/llvm/build
 
 The following script invokes the AccelSeeker Analysis passes and generates the files needed to construct the final Merit/Cost estimation.
-The files generated are: FCI.txt  IO.txt  LA.txt 
-    
+The files generated are: FCI.txt  IO.txt  LA.txt
+
     ./run_sys_aw.sh
 
 
@@ -97,16 +102,16 @@ The MCI.txt file can be used subsequently by the exact selection algorithm in or
 
 e.g.  ../accel_selection_algo_src/accel-find MCI.txt 1000
 
-### Clean Up. 
+### Clean Up.
 
 To delete all data files use:
 
-    ../scripts/delete_all_data_files.sh 
+    ../scripts/delete_all_data_files.sh
 
 
 # Methodology
 
-AccelSeeker performs identification of valid candidates for acceleration (AccelCands) and estimates their performance in terms of speedup gains (cycles saved or hereafter called Merit) and hardware resources required 
+AccelSeeker performs identification of valid candidates for acceleration (AccelCands) and estimates their performance in terms of speedup gains (cycles saved or hereafter called Merit) and hardware resources required
 (area or hereafter called Cost).
 
 The process is as follows:
