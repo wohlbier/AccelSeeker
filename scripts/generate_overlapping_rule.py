@@ -30,5 +30,4 @@ for c in content:
 with open('FCI_CROPPED_OVERLAP_RULE.txt', 'w') as file:
     file.write(new_file)
 
-print new_file
-
+print(new_file)
