@@ -7,8 +7,8 @@ new_file = ""
 for c in content:
     c_split = c.split(" ")
     if len(c_split) < 2:
-	line = c
-    	new_file += line + '\n'
+        line = c
+        new_file += line + '\n'
         continue
     name = c_split[0]
     p = c_split[1]
